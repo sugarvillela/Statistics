@@ -3,6 +3,7 @@ You can download any of this and run it in your browser
 
 # Naive Bayes Classifier
 This is a machine learning basic
+ * To try a live version of this, go to http://daveswanson.info/stat/bayes.html
  * Read the code comments to see what happens.  Training and test data are written in the code.  To try with other data, add user input capability or just edit the code.
  * Zero failure rate on the tests here.
  * Found .03% error rate on a large dataset.
