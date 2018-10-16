@@ -21,3 +21,11 @@ Lists statistical attributes of a dataset.
 # Statistics Discrete Distributions
 Input fields on the HTML file. 
  * Binomial distribution, hyper-geometric, poisson, and negative binomial.
+ 
+ # Number Speller
+This has nothing to do with statistics but it's cool. 
+ * To try a live version of this, go to http://daveswanson.info/numspell/
+ * Type a number like 2,333,215 and it will display the number in words.
+ * Type a number in words (lower case) and it will display the number in digits.
+ * Commas are okay in numeric imput.
+ * Bare bones, no validation, so if your input doesn't make sense expect garbage out.
