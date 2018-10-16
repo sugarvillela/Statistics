@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="Dave Swanson"/>
+    <title>Statistics 101</title>
+    <!-- Bootstrap core CSS -->
+    <link href="./css/bootstrap.min.css" rel="stylesheet"/>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="./css/ie10-viewport-bug-workaround.css" rel="stylesheet"/>
+<style>
+        body {
+            background-color: #E4F2E1;/*#B0C5E4*/
+        }
+        .cour{
+            font-family:courier;
+        }
+        .p20x {
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+        .p20y {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+        .m20x {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .m20y {
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+        .pop{
+            margin-top: 35px;
+            display: none;
+            position: absolute;
+            top: 2%;
+            left: 2%;
+            width: 96%;
+            padding: 5px;
+            border: 2px solid gray;
+            background-color: #F8F8F8;;
+            color: black;
+            z-index:1002;
+        /*    overflow: scroll;*/
+            overflow-y: hidden
+        }
+        .txtColor{
+            color: #7FFFF0 !important;
+        }
+        .figRound {
+/*            margin:10px;*/
+            padding: 16px 8px 8px 8px;
+            border-radius: 6px;
+            background-color: #157184;
+            color: #7FFFF0;
+        }
+        .figImg{
+            max-height: 140px;
+            overflow: hidden;
+        }
+        .section{
+            margin-top:10px;
+            padding:10px 20px 10px 20px;
+            background-color: #1B899E;
+            color: white;
+            font-size: 18px;
+            border-style: solid;
+            border-width: 2px 0 2px 0;
+            border-color: #7FFFF0;
+        }
+        a{
+          cursor: pointer;
+        }
+        a:hover {
+          color: red;
+        }
+    </style>
+    <script type="text/javascript" src="./js/stat.js?0=2" ></script> 
+</head>
+<body>
+<div class="container-fluid">
+  <div id="content"><!-- Begin visible content-->
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="form-group ">
+        <h4>Set Tool</h4>
+        <label>Paste Here... <a onclick="popOpen('pop_instruct')">See instructions</a></label>
+        <textarea class="form-control m20x p20x" id="textIn" rows="12" cols="80"></textarea>
+      </div>
+      <input type="submit" value="Set Tool...Go!" onclick="handleSets()"/>
+    </div>  
+  </div>
+    <br/><br/>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="form-group ">
+        <h4>Discrete Distributions</h4>
+        <label>Select... <a onclick="popOpen('pop_instruct2')">See instructions</a></label>
+          <form>
+            <label class="radio-inline">
+              <input type="radio" name="optradio" checked onclick="multiIn('b')" />Binomial
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="optradio" onclick="multiIn('h')"/>Hyper-Geometric
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="optradio" onclick="multiIn('p')"/>Poisson
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="optradio" onclick="multiIn('n')"/>Negative Binomial
+            </label>
+          </form>
+      </div>
+    </div>  
+  </div>
+  <div class="row">
+    <div class="col-xs-2">
+      <div class="form-group ">
+        <form>
+          <label id="ia_label">X</label>
+          <input type="text" class="form-control" id="ia" />
+          <small class="form-text text-muted" id="ia_clue">Value/Range</small>
+        </form>
+      </div>
+      <input type="submit" value="Distribution...Go!" onclick="NEXT_DIST()"/>
+    </div>
+    <div class="col-xs-2">
+      <div class="form-group ">
+        <form>
+          <label id="ib_label">Sample</label>
+          <input type="text" class="form-control" id="ib" />
+          <small class="form-text text-muted" id="ib_clue">Size</small>
+        </form>
+      </div>
+    </div>
+    <div class="col-xs-2" id="ic_col">
+      <div class="form-group ">
+        <form>
+          <label id="ic_label">Probability</label>
+          <input type="text" class="form-control" id="ic" />
+          <small class="form-text text-muted" id="ic_clue">0 to 1</small>
+        </form>
+      </div>
+    </div>
+    <div class="col-xs-2" id="id_col">
+      <div class="form-group ">
+        <form>
+          <label id="id_label">Pop. Size</label>
+          <input type="text" class="form-control" id="id" />
+          <small class="form-text text-muted">Value</small>
+        </form>
+      </div>
+    </div> 
+  </div>
+  </div> <!-- end visible content-->
+<!--    SET RESULT-->
+  <div class="panel panel-default flex-col pop cour" id="pop_set">
+   <div class="panel-heading">
+     <div class="row" >
+        <div class="col-xs-6 text-left">
+            <label>Set Tools</label>
+        </div>
+        <div class="col-xs-6 text-right">
+            <a onclick="popClose('pop_set')">Close</a>
+        </div>
+     </div>
+   </div>
+   <div class="panel-body flex-grow" style="color:black;">
+       <div class="row p20x">
+           <div class="col-sm-4">Input Two-D</div>
+           <div class="col-sm-8" id="orig"></div>
+       </div>
+       <div class="row p20x">
+           <div class="col-sm-4">Input One-D Sorted</div>
+           <div class="col-sm-8" id="sorted"></div>
+       </div>
+       <div class="row p20x">
+           <div class="col-sm-4">Input Attributes</div>
+           <div class="col-sm-8" id="iattr"></div>
+       </div>
+       <div class="row p20x">
+           <div class="col-sm-4">Input Outliers</div>
+           <div class="col-sm-8" id="iout"></div>
+       </div>
+       <div class="row p20x">
+           <div class="col-sm-4">Union</div>
+           <div class="col-sm-8" id="union"></div>
+       </div>
+       <div class="row p20x">
+           <div class="col-sm-4">Intersection</div>
+           <div class="col-sm-8" id="intersect"></div>
+       </div>
+       <div class="row p20x">
+           <div class="col-sm-4">Union Attributes</div>
+           <div class="col-sm-8" id="uattr"></div>
+       </div>
+       <div class="row p20x">
+           <div class="col-sm-4">Union Outliers</div>
+           <div class="col-sm-8" id="uout"></div>
+       </div>
+       <div class="row p20x p20y" id="histo" ></div>
+   </div>
+   <div class="panel-footer">
+        <div class="col-xs-12 text-right">
+            <a onclick="popClose('pop_set')">Close</a>
+        </div>
+   </div>
+  </div>
+
+<!--    SET TOOL INSTRUCTIONS-->
+  <div class="panel panel-default flex-col pop" id="pop_instruct">
+   <div class="panel-heading">
+     <div class="row" >
+        <div class="col-xs-6 text-left">
+            <label>Set Tool Instructions</label>
+        </div>
+        <div class="col-xs-6 text-right">
+            <a onclick="popClose('pop_instruct')">Close</a>
+        </div>
+     </div>
+   </div>
+   <div class="panel-body flex-grow" style="color:black;">
+       <h4>Single Set Input Examples</h4>
+       <dl class="dl-horizontal">
+           <dt>Space-Separated</dt>
+           <dd>42 18 46</dd>
+           <dt>Comma-Separated</dt>
+           <dd>42, 18, 46</dd> 
+           <dt>Floats are Fine</dt>
+           <dd>42.6 18.94 46</dd> 
+       </dl>
+       <h4>Multi-Set Input Examples</h4>
+       <dl class="dl-horizontal">
+           <dt>Use Vertical Bar</dt>
+           <dd>88 22 66 1 5 18 46 23 20 10 42 18 46 1400| 18 33 4 65 5 20 17 | 88 18 33 45 46 8000</dd>       
+       </dl>
+       <h4>Watch Out For...</h4>
+       <dl class="dl-horizontal">
+           <dt>PDF files</dt>
+           <dd>If you see a 'non-numeric data' error, paste to a text file first, then re-copy</dd>  
+           <dt>Histogram</dt>
+           <dd>Shows union set only.</dd> 
+           <dt></dt>
+           <dd>Outliers are discarded</dd> 
+       </dl>
+   </div>
+   <div class="panel-footer">
+        <div class="col-xs-12 text-right">
+            <a onclick="popClose('pop_instruct')">Close</a>
+        </div>
+   </div>
+  </div>
+<!--    DISTRIBUTION INSTRUCTIONS-->
+  <div class="panel panel-default flex-col pop" id="pop_instruct2">
+   <div class="panel-heading">
+     <div class="row" >
+        <div class="col-xs-6 text-left">
+            <label>Discrete Distribution Instructions</label>
+        </div>
+        <div class="col-xs-6 text-right">
+            <a onclick="popClose('pop_instruct2')">Close</a>
+        </div>
+     </div>
+   </div>
+   <div class="panel-body flex-grow" style="color:black;">
+       <h4>Input Examples</h4>
+       <dl class="dl-horizontal">
+           <dt>Value</dt>
+           <dd>Type an integer</dd>
+           <dt>Range</dt>
+           <dd>Dash-separated range, like this: 1-5</dd> 
+           <dt>Probability</dt>
+           <dd>Number between 0 and 1, like 0.736</dd> 
+           <dt>Lambda</dt>
+           <dd>Can be integer or float</dd> 
+           <dt>In General...</dt>
+           <dd>All inputs are positive numbers</dd>
+           <dt></dt>
+           <dd>Portions can't be greater than wholes</dd>
+       </dl>
+       <h4>Binomial</h4>
+        The Binomial Distribution gives the probability of 'X' successes, where:
+        <ul>
+          <li>'X' is a number or range of numbers (integer only)</li>
+          <li>'Probability' is the chance of each event happening</li>
+          <li>The probability of each 'success' denoted in 'X' is equal</li>
+          <li>For each 'X' tested, the same event is not tested again (like taking cards from a deck without replacing).</li>
+        </ul>
+        <h4>Hyper-Geometric</h4>
+        The Hyper-Geometric Distribution gives the probability of 'X' successes, where:
+        <ul>
+          <li>'X' is a number or range of numbers (integer only)</li>
+          <li>'Pop. Success' is the number of successes in the greater population from which the sample is taken</li>
+          <li>'Pop. Size' is the size of the greater population from which the sample is taken</li>
+          <li>Result is the same whether expressed as fraction or decimal</li>
+        </ul>
+        <h4>Poisson</h4>
+        The Poisson Distribution gives the probability of 'X' successes, where:
+        <ul>
+          <li>'X' is a number or range of numbers (integer only)</li>
+          <li>'Lambda' is the expected value of x</li>
+        </ul>
+       <h4>Negative Binomial</h4>
+        The Negative Binomial Distribution gives the probability of 'X' successes, where:
+        <ul>
+          <li>'X' is an integer</li>
+          <li>'Failures' the number of tries before reaching success.</li>
+          <li>'Probability' is the chance of each event happening</li>
+        </ul>
+   </div>
+   <div class="panel-footer">
+        <div class="col-xs-12 text-right">
+            <a onclick="popClose('pop_instruct2')">Close</a>
+        </div>
+   </div>
+  </div>
+<!--    BINOMIAL RESULT-->
+  <div class="panel panel-default flex-col pop" id="pop_b">
+   <div class="panel-heading">
+     <div class="row" >
+        <div class="col-xs-6 text-left">
+            <label>Binomial Distribution</label>
+        </div>
+        <div class="col-xs-6 text-right">
+            <a onclick="popClose('pop_b')">Close</a>
+        </div>
+     </div>
+   </div>
+   <div class="panel-body flex-grow" style="color:black;">
+     <div class="row" >
+        <div class="col-xs-6 text-left">
+           <dl class="dl-horizontal">
+               <dt>X</dt>
+               <dd id="pop_b_a"></dd>
+               <dt>Sample Size</dt>
+               <dd id="pop_b_b"></dd>
+               <dt>Probability</dt>
+               <dd id="pop_b_c"></dd>
+               <dt>&nbsp;</dt><dd>&nbsp;</dd>
+               <dt>Result</dt>
+               <dd id="pop_b_r"></dd>
+           </dl>
+        </div>
+        <div class="col-xs-6">
+            The Binomial Distribution gives the probability of 'X' successes, where:
+            <ul>
+              <li>'X' is a number or range of numbers (integer only)</li>
+              <li>'Probability' is the chance of each event happening</li>
+              <li>The probability of each 'success' denoted in 'X' is equal</li>
+              <li>For each 'X' tested, the same event is not tested again (like taking cards from a deck without replacing).</li>
+            </ul>
+        </div>
+     </div>
+   </div>
+   <div class="panel-footer">
+        <div class="col-xs-12 text-right">
+            <a onclick="popClose('pop_b')">Close</a>
+        </div>
+   </div>
+  </div>
+<!--    HYPER-GEOMETRIC RESULT-->
+  <div class="panel panel-default flex-col pop" id="pop_h">
+   <div class="panel-heading">
+     <div class="row" >
+        <div class="col-xs-6 text-left">
+            <label>Hyper-Geometric Distribution</label>
+        </div>
+        <div class="col-xs-6 text-right">
+            <a onclick="popClose('pop_h')">Close</a>
+        </div>
+     </div>
+   </div>
+   <div class="panel-body flex-grow" style="color:black;">
+     <div class="row" >
+        <div class="col-xs-6 text-left">
+           <dl class="dl-horizontal">
+               <dt>X</dt>
+               <dd id="pop_h_a"></dd>
+               <dt>Sample Size</dt>
+               <dd id="pop_h_b"></dd>
+               <dt>Pop. Success</dt>
+               <dd id="pop_h_c"></dd>
+               <dt>Pop. Size</dt>
+               <dd id="pop_h_d"></dd>
+               <dt>&nbsp;</dt><dd>&nbsp;</dd>
+               <dt>Result (Fraction)</dt>
+               <dd id="pop_h_r1"></dd>
+               <dt>Result (Decimal)</dt>
+               <dd id="pop_h_r2"></dd>
+           </dl>
+        </div>
+        <div class="col-xs-6">
+            The Hyper-Geometric Distribution gives the probability of 'X' successes, where:
+            <ul>
+              <li>'X' is a number or range of numbers (integer only)</li>
+              <li>'Pop. Success' is the number of successes in the greater population from which the sample is taken</li>
+              <li>'Pop. Size' is the size of the greater population from which the sample is taken</li>
+              <li>Result is the same whether expressed as fraction or decimal</li>
+            </ul>
+        </div>
+     </div>
+   </div>
+   <div class="panel-footer">
+        <div class="col-xs-12 text-right">
+            <a onclick="popClose('pop_h')">Close</a>
+        </div>
+   </div>
+  </div>
+<!--    POISSON RESULT-->
+  <div class="panel panel-default flex-col pop" id="pop_p">
+   <div class="panel-heading">
+     <div class="row" >
+        <div class="col-xs-6 text-left">
+            <label>Poisson Distribution</label>
+        </div>
+        <div class="col-xs-6 text-right">
+            <a onclick="popClose('pop_p')">Close</a>
+        </div>
+     </div>
+   </div>
+   <div class="panel-body flex-grow" style="color:black;">
+     <div class="row" >
+        <div class="col-xs-6 text-left">
+           <dl class="dl-horizontal">
+               <dt>X</dt>
+               <dd id="pop_p_a"></dd>
+               <dt>Lambda</dt>
+               <dd id="pop_p_b"></dd>
+               <dt>&nbsp;</dt><dd>&nbsp;</dd>
+               <dt>Result</dt>
+               <dd id="pop_p_r"></dd>
+           </dl>
+        </div>
+        <div class="col-xs-6">
+            The Poisson Distribution gives the probability of 'X' successes, where:
+            <ul>
+              <li>'X' is a number or range of numbers (integer only)</li>
+              <li>'Lambda' is the expected value of x</li>
+            </ul>
+        </div>
+     </div>
+   </div>
+   <div class="panel-footer">
+        <div class="col-xs-12 text-right">
+            <a onclick="popClose('pop_p')">Close</a>
+        </div>
+   </div>
+  </div>
+<!--    NEG BINOM RESULT-->
+  <div class="panel panel-default flex-col pop" id="pop_n">
+   <div class="panel-heading">
+     <div class="row" >
+        <div class="col-xs-6 text-left">
+            <label>Negative Binomial Distribution</label>
+        </div>
+        <div class="col-xs-6 text-right">
+            <a onclick="popClose('pop_n')">Close</a>
+        </div>
+     </div>
+   </div>
+   <div class="panel-body flex-grow" style="color:black;">
+     <div class="row" >
+        <div class="col-xs-6 text-left">
+           <dl class="dl-horizontal">
+               <dt>X</dt>
+               <dd id="pop_n_a"></dd>
+               <dt>Trials</dt>
+               <dd id="pop_n_b"></dd>
+               <dt>Probability</dt>
+               <dd id="pop_n_c"></dd>               
+               <dt>&nbsp;</dt><dd>&nbsp;</dd>
+               <dt>Result</dt>
+               <dd id="pop_n_r"></dd>
+           </dl>
+        </div>
+        <div class="col-xs-6">
+            The Negative Binomial Distribution gives the probability of 'X' successes, where:
+            <ul>
+              <li>'X' is an integer</li>
+              <li>'Failures' the number of tries before reaching success.</li>
+              <li>'Probability' is the chance of each event happening</li>
+            </ul>
+        </div>
+     </div>
+   </div>
+   <div class="panel-footer">
+        <div class="col-xs-12 text-right">
+            <a onclick="popClose('pop_n')">Close</a>
+        </div>
+   </div>
+  </div>
+
+<!--    DISPLAY ERROR-->
+  <div class="panel panel-default flex-col pop" id="pop_err">
+   <div class="panel-heading">
+     <div class="row" >
+        <div class="col-xs-6 text-left">
+            <label style="color:red">Error: Please See Instructions...</label>
+        </div>
+        <div class="col-xs-6 text-right">
+            <a onclick="popClose('pop_err')">Close</a>
+        </div>
+     </div>
+   </div>
+   <div class="panel-body flex-grow" style="color:black;" id="errContent"></div>
+   <div class="panel-footer">
+        <div class="col-xs-12 text-right">
+            <a onclick="popClose('pop_err')">Close</a>
+        </div>
+   </div>
+  </div>
+    <br/>
+    <div class="row text-center small">Developed By: <a href="http://www.daveswanson.info/" >
+        <img src="images/dsinfo_black.png" alt="DaveSwanson.info" /></a>  &copy; 2018
+    </div>
+</div>
+
+            
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="./js/ie10-viewport-bug-workaround.js"></script>
+    <script>
+        function popOpen( id ){
+            if( id===POP_OPEN ){//when open, button closes it
+                popClose( id );
+                return;
+            }
+            var ids=[
+                '#pop_instruct', '#pop_instruct2', '#pop_set','#pop_b',
+                '#pop_h','#pop_p','#pop_n','#pop_err'
+            ];
+            for( var i=0; i<ids.length; i++ ){
+                $( ids[i] ).hide();
+            }
+            $('#content').hide();
+            $('#'+id ).show();
+            POP_OPEN=id;
+        }
+        function popClose( id ){
+            $('#'+id ).hide();
+            $('#content').show();
+            POP_OPEN=false;
+        }
+        (function() {
+            POP_OPEN=false;
+            NEXT_DIST=Discr.dist_b;
+            $('#id_col').hide();
+        })();
+    </script>
+  </body>
+</html>
