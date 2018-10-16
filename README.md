@@ -1,5 +1,14 @@
+You can download any of this and run it in your browser 
+(Might look funny if you don't have Bootstrap)
+
+# Naive Bayes Classifier
+This is a machine learning basic
+ * Read the code comments to see what happens.  Training and test data are written in the code.  To try with other data, add user input capability or just edit the code.
+ * Zero failure rate on the tests here.
+ * Found .03% error rate on a large dataset.
+ 
 # Set Tools
-This code takes input date, splits it into sets and does basic set and statistical functions. 
+This code takes input data, splits it into sets and does basic set and statistical functions. 
  * To try a live version of this, go to http://daveswanson.info/stat/index.html
  * Use the text area for pasting data: any whitespace or comma-separated list of numbers
  * For more than one set you can add a vertical bar like this: |
@@ -12,9 +21,3 @@ Lists statistical attributes of a dataset.
 # Statistics Discrete Distributions
 Input fields on the HTML file. 
  * Binomial distribution, hyper-geometric, poisson, and negative binomial.
- 
- # Naive Bayes Classifier
-This is a machine learning basic
- * Read the code comments to see what happens.  Training and test data are written in the code.  To try with other data, add user input capability or just edit the code.
- * Zero failure rate on the tests here.
- * Found .03% error rate on a large dataset.
