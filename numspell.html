@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>JS Test</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        function words(){
+            this.n3={//10^3 and above
+                0:'',3:'thousand',6:'million',9:'billion',
+                12:'trillion',15:'quadrillion'
+            };
+            //this.n2='hundred';
+            this.n1={//10^1 and below
+                1:'one',2:'two',3:'three',4:'four',5:'five',
+                6:'six',7:'seven',8:'eight',9:'nine',
+                10:'ten',11:'eleven',12:'twelve',13:'thirteen',14:'fourteen',15:'fifteen',
+                16:'sixteen',17:'seventeen',18:'eighteen',19:'nineteen', 
+                20:'twenty',30:'thirty',40:'forty',50:'fifty',
+                60:'sixty',70:'seventy',80:'eighty',90:'ninety'
+            };
+        }
+        var numToWords=new function(){
+            this.w=new words();
+            this.go=function( n ){
+                n=this.allNum( n );//remove commas and check for all numeric
+                return  ( n===false )? false :
+                        ( n==='0' )? 'zero' : 
+                        this.thousands( n, 0 ); 
+            };
+            this.thousands=function( str, i ){
+                var len=str.length;
+                if( len<=3 ){ return this.hundreds( str, i ); }
+                return this.thousands( str.substr( 0, len-3 ), i+3 )+
+                        ' '+
+                        this.hundreds( str.substr( len-3 ), i );
+            };
+            this.hundreds=function( str, i ){
+                return  ( str.length<3 )? this.tens( str, i ) : 
+                        ( str[0]==='0' )? this.tens( str.substr( 1 ), i ) : 
+                        this.w.n1[ str[0] ]+' hundred '+ 
+                            this.tens( str.substr( 1 ), i );
+            };
+            this.tens=function( str, i ){
+                return  ( str.length<2 )? this.ones( str, i ) :
+                        ( str[0]==='0' )? this.ones( str[1], i ):
+                        ( str[0]==='1' || str[1]==='0' )? 
+                            this.w.n1[ str ]+this.w.n3[i]:
+                            this.w.n1[ str[0]+'0' ]+' '+this.ones( str[1], i );
+            };
+            this.ones=function( str, i ){
+                return ( str.length && str!=='0' )? 
+                    this.w.n1[ str ]+' '+this.w.n3[i] : ' '+this.w.n3[i];
+            };
+            this.allNum=function( n ){
+                var i, c, out='';
+                for( i=0; i<n.length; i++ ){
+                    if( n[i]===','){ continue; }//allow commas and skip
+                    c=n.charCodeAt(i);
+                    if( c<48 || c>57 ){ return false; }
+                    out+=n[i];
+                }
+                return out;
+            };
+        };
+        var wordToNum=new function(){
+            this.w=new words();
+            this.go=function( n ){
+                if ( n==='zero' ){ return 0; }
+                var list=this.allNumWord( n );//remove commas and check for all numeric
+                return ( list===false )? false : this.sum( list );
+            };
+            this.sum=function( list ){
+                var total=0, curSum=0, val, op, sums=[], last=Infinity;
+                for( var i=0; i<list.length; i++ ){
+                    op=list[i][0];
+                    val=list[i].substr( 1);
+                    switch (op){
+                        case '+':
+                            //console.log( curSum+ ' add with: '+val);
+                            curSum+=(val-0);
+                            break;
+                        case '*':
+                            //console.log( curSum+ 'mult by: 100');
+                            curSum*=100;
+                            break;
+                        case '^':
+                            //console.log( curSum+ 'mult by: 10^'+val );
+                            total+=( curSum*Math.pow(10, (val-0) ) );
+                            curSum=0;
+                            break;
+                        default:
+                            //console.log( 'sum, no op ');
+                            break;
+                    }
+                }
+                if( curSum ){//always push the last thing
+                    total+=curSum;
+                }
+                return this.addCommas( total );
+            };
+            this.addCommas = function( n ){
+                return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            };
+            this.allNumWord=function( n ){
+                var i, curr, val, out=[], list=n.split(' ');
+                for( i=0; i<list.length; i++ ){
+                    curr=list[i].trim();
+                    if( curr==='and' ){ continue; }//allow 'and' and skip
+                    if( !( val=this.valOrPow( list[i].trim() ) ) ){
+                        return false;
+                    }
+                    out.push( val );
+                }
+                return out;
+            };
+            this.valOrPow=function( str ){
+                if( str==='hundred'){ return '*2'; }
+                for( var val in this.w.n1 ){
+                    if( this.w.n1[val]===str ){
+                        return '+'+val.toString();
+                    }
+                }
+                for( var val in this.w.n3 ){
+                    if( this.w.n3[val]===str ){
+                        return '^'+val.toString();
+                    }
+                }
+                return false;
+            };
+            
+        };
+        function handleNumIn(){
+            var str, n=document.getElementById( 'numin' ).value.trim();
+            document.getElementById( 'numin' ).value='';
+            document.getElementById( 'numout' ).innerHTML=n;
+            var str=numToWords.go( n );
+            if( 
+                ( str=numToWords.go( n ) )===false && 
+                ( str=wordToNum.go( n ) )===false 
+            ){
+                console.log( 'not a number' );
+                document.getElementById( 'result' ).innerHTML='Not a number';
+            }
+            else{
+                console.log( 'result' );
+                console.log( n );
+                console.log( str );
+                document.getElementById( 'result' ).innerHTML=str;
+            }
+        }
+    </script>
+  </head>
+  <body>
+    <form action="javascript:void(0);">
+        Type a Number<br>
+        <input type="text" id="numin" placeholder="1234"><br>
+        <input type="submit" value="Submit"
+               onclick="handleNumIn()">
+    </form> 
+    <h4 id="numout">Number</h4>
+    <h4 id="result">Words</h4>
+  </body>
+</html>
