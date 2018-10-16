@@ -30,3 +30,7 @@ This has nothing to do with statistics but it's cool.
  * Type a number in words (lower case) and it will display the number in digits.
  * Commas are okay in numeric imput.
  * Bare bones, no validation, so if your input doesn't make sense expect garbage out.
+
+# Naive Bayes Classifier (Python)
+Identical to the Javascript version
+* Wrote the js version first, then translated to python for coursework
