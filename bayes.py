@@ -1,3 +1,6 @@
+# I'm not fluent in Python, which explains why this code looks like C without brackets
+import numpy as np
+
 def loadsparsedata():#x1 x2 x3 y
     X=[#cloudy=0, reining=1, sunny=2
         [0,2,0],
