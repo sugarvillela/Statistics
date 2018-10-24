@@ -34,3 +34,4 @@ This has nothing to do with statistics but it's cool.
 # Naive Bayes Classifier (Python)
 Identical to the Javascript version
 * Wrote the js version first, then translated to python for coursework
+* I moved the file to my Machine Learning repos
